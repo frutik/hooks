@@ -21,11 +21,8 @@ class AsyncSender(Sender):
 class SyncSender(Sender):
     @staticmethod
     def send(message):
-        routes = yaml.load(
-            open(
-                '/etc/asterisk/call_hooks/routes.yml',
-                'r'))
+        route = message.pop('route')
         requests.post(
-            routes[message['type']],
+            route,
             data=message
         )
