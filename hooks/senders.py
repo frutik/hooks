@@ -24,5 +24,6 @@ class SyncSender(Sender):
         route = message.pop('route')
         requests.post(
             route,
-            data=message
+            data=message,
+            verify=False
         )
