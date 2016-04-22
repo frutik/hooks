@@ -1,6 +1,6 @@
 import zmq
 import json
-import yaml
+import logging
 import requests
 
 
@@ -21,28 +21,28 @@ class AsyncSender(Sender):
 class SyncSender(Sender):
     @staticmethod
     def send(message):
+        logger = logging.getLogger('hooks')
+        logger.setLevel(logging.DEBUG)
+
+        fh = logging.FileHandler('/tmp/hooks.log')
+        fh.setLevel(logging.DEBUG)
+
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fh.setFormatter(formatter)
+
+        logger.addHandler(fh)
+
+        logger.debug(json.dumps(message))
+
         route = message.pop('route')
         try:
-            requests.post(
-                route,
-                data=message
-            )
-            logger.debug(json.dumps(message))
+            for r in list(route):
+                requests.post(
+                    r,
+                    data=message,
+                    verify=False
+                )
+
         except Exception, e:
             logger.debug(str(e))
-
-
-logger = logging.getLogger('hooks')
-logger.setLevel(logging.DEBUG)
-
-fh = logging.FileHandler('/tmp/hooks.log')
-fh.setLevel(logging.DEBUG)
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-
-logger.addHandler(fh)
-
-
-
 
