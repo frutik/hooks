@@ -20,8 +20,8 @@ class AsyncSender(Sender):
 
 class SyncSender(Sender):
     @staticmethod
-    def send(message):
-        logger = logging.getLogger('hooks')
+    def send(event_type, message):
+        logger = logging.getLogger(event_type)
         logger.setLevel(logging.DEBUG)
 
         fh = logging.FileHandler('/tmp/hooks.log')
