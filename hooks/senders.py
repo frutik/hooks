@@ -20,8 +20,8 @@ class AsyncSender(Sender):
 
 class SyncSender(Sender):
     @staticmethod
-    def send(event_type, message):
-        logger = logging.getLogger(event_type)
+    def send(message):
+        logger = logging.getLogger(message.get('type'))
         logger.setLevel(logging.DEBUG)
 
         fh = logging.FileHandler('/tmp/hooks.log')
@@ -35,8 +35,10 @@ class SyncSender(Sender):
         logger.debug(json.dumps(message))
 
         route = message.pop('route')
+        if type(route) != type([]):
+            route = [route]
         try:
-            for r in list(route):
+            for r in route:
                 requests.post(
                     r,
                     data=message,
