@@ -46,5 +46,5 @@ class SyncSender(Sender):
                 )
 
         except Exception, e:
-            logger.debug(str(e))
+            logger.exception(str(e))
 
