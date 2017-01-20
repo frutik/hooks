@@ -35,6 +35,7 @@ class SyncSender(Sender):
         logger.debug(json.dumps(message))
 
         try:
+            # TODO request timeout
             requests.post(
                 route,
                 data=message,
