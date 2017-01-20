@@ -10,7 +10,7 @@ class Sender(object):
 
 class AsyncSender(Sender):
     @staticmethod
-    def send(message):
+    def send(route, message):
         context = zmq.Context()
         sock = context.socket(zmq.PUSH)
         sock.connect("tcp://127.0.0.1:5555")
@@ -20,7 +20,7 @@ class AsyncSender(Sender):
 
 class SyncSender(Sender):
     @staticmethod
-    def send(message):
+    def send(route, message):
         logger = logging.getLogger(message.get('type'))
         logger.setLevel(logging.DEBUG)
 
@@ -34,17 +34,12 @@ class SyncSender(Sender):
 
         logger.debug(json.dumps(message))
 
-        route = message.pop('route')
-        if type(route) != type([]):
-            route = [route]
         try:
-            for r in route:
-                requests.post(
-                    r,
-                    data=message,
-                    verify=False
-                )
-
+            requests.post(
+                route,
+                data=message,
+                verify=False
+            )
         except Exception, e:
             logger.exception(str(e))
 
