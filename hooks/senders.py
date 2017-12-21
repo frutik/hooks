@@ -32,15 +32,21 @@ class SyncSender(Sender):
 
         logger.addHandler(fh)
 
-        logger.debug(json.dumps(message))
+        message['result'] = {}
 
         try:
             # TODO request timeout
-            requests.post(
+            result = requests.post(
                 route,
                 data=message,
                 verify=False
             )
+            message['result']['code'] = result.status_code
+            if result.status_code != 200:
+                message['result']['message'] = result.text
         except Exception, e:
             logger.exception(str(e))
+            message['result']['exception'] = e.message
+
+        logger.debug(json.dumps(message))
 
