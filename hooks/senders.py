@@ -32,7 +32,9 @@ class SyncSender(Sender):
 
         logger.addHandler(fh)
 
-        message['result'] = {}
+        message['result'] = {
+            'route': route
+        }
 
         try:
             # TODO request timeout
