@@ -41,7 +41,8 @@ class SyncSender(Sender):
             result = requests.post(
                 route,
                 data=message,
-                verify=False
+                verify=False,
+                timeout=1
             )
             message['result']['code'] = result.status_code
             if result.status_code != 200:
