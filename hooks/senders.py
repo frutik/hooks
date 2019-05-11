@@ -10,7 +10,7 @@ class Sender(object):
 
 class AsyncSender(Sender):
     @staticmethod
-    def send(route, message):
+    def send(route, message, timeout=10):
         context = zmq.Context()
         sock = context.socket(zmq.PUSH)
         sock.connect("tcp://127.0.0.1:5555")
@@ -20,7 +20,7 @@ class AsyncSender(Sender):
 
 class SyncSender(Sender):
     @staticmethod
-    def send(route, message):
+    def send(route, message, timeout=10):
         logger = logging.getLogger(message.get('type'))
         logger.setLevel(logging.DEBUG)
 
@@ -42,7 +42,7 @@ class SyncSender(Sender):
                 route,
                 data=message,
                 verify=False,
-                timeout=1
+                timeout=timeout
             )
             message['result']['code'] = result.status_code
             if result.status_code != 200:
