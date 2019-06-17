@@ -8,6 +8,34 @@ class Sender(object):
     pass
 
 
+class Response(object):
+    def __init__(self, response=None):
+        pass
+
+    def time(self):
+        return None
+
+    def status(self):
+        return None
+
+    def message(self):
+        return None
+
+
+class RequestsResponse(object):
+    def __init__(self, response=None):
+        self.response = response
+
+    def time(self):
+        return self.response.elapsed
+
+    def status(self):
+        return self.response.status_code
+
+    def message(self):
+        return self.response.text
+
+
 class AsyncSender(Sender):
     @staticmethod
     def send(route, message, timeout=10):
@@ -16,6 +44,8 @@ class AsyncSender(Sender):
         sock.connect("tcp://127.0.0.1:5555")
         sock.send(
             json.dumps(message))
+
+        return Response()
 
 
 class SyncSender(Sender):
@@ -37,7 +67,6 @@ class SyncSender(Sender):
         }
 
         try:
-            # TODO request timeout
             result = requests.post(
                 route,
                 data=message,
@@ -52,4 +81,6 @@ class SyncSender(Sender):
             message['result']['exception'] = e.message
 
         logger.debug(json.dumps(message))
+
+        return RequestsResponse(result)
 
