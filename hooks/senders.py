@@ -4,6 +4,16 @@ import logging
 import requests
 
 
+class Hook(object):
+    @staticmethod
+    def send(hook, message):
+        if hook['async']:
+            sender = AsyncSender
+        else:
+            sender = SyncSender
+        return sender.send(hook['url'], message, hook['timeout'])
+
+
 class Sender(object):
     pass
 
