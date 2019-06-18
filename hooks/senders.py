@@ -12,13 +12,7 @@ class Response(object):
     def __init__(self, response=None):
         pass
 
-    def time(self):
-        return None
-
     def status(self):
-        return None
-
-    def message(self):
         return None
 
 
@@ -26,14 +20,8 @@ class RequestsResponse(object):
     def __init__(self, response=None):
         self.response = response
 
-    def time(self):
-        return self.response.elapsed
-
     def status(self):
         return self.response.status_code
-
-    def message(self):
-        return self.response.text
 
 
 class AsyncSender(Sender):
@@ -74,6 +62,7 @@ class SyncSender(Sender):
                 timeout=timeout
             )
             message['result']['code'] = result.status_code
+            message['result']['duration'] = result.elapsed
             if result.status_code != 200:
                 message['result']['message'] = result.text
         except Exception, e:
