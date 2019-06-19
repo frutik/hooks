@@ -72,7 +72,7 @@ class SyncSender(Sender):
                 timeout=timeout
             )
             message['result']['code'] = result.status_code
-            message['result']['duration'] = result.elapsed
+            message['result']['duration'] = str(result.elapsed)
             if result.status_code != 200:
                 message['result']['message'] = result.text
         except Exception, e:
